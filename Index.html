@@ -1,0 +1,775 @@
+
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jom Kenali Vokal! | Pengembaraan Harta Karun</title>
+<style>
+:root {
+  --navy:#17345b; --blue:#287bb5; --gold:#ffcf56;
+  --cream:#fff8df; --green:#43b77a; --red:#e65b63;
+  --purple:#875bd5;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; font-family:"Trebuchet MS",Arial,sans-serif;
+  color:var(--navy);
+  background:linear-gradient(180deg,#a8e8ff,#e5f9ff 55%,#ffe7a8);
+  min-height:100vh;
+}
+button,input,select { font:inherit; }
+button {
+  cursor:pointer; border:0; border-radius:18px;
+  padding:13px 18px; font-weight:900;
+  box-shadow:0 5px 0 #0002; transition:.15s;
+}
+button:hover { transform:translateY(-2px); }
+button:active { transform:translateY(2px); box-shadow:none; }
+button:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+.primary { color:white; background:linear-gradient(#36a6e8,#2374ba); }
+.gold { color:#6c4200; background:linear-gradient(#ffe98b,#ffbd3e); }
+.green { color:white; background:linear-gradient(#63d89a,#25a866); }
+.purple { color:white; background:linear-gradient(#b398ff,#8056d8); }
+.soft { color:var(--navy); background:white; }
+.danger { color:white; background:#e65b63; }
+header {
+  text-align:center; padding:22px 12px 15px;
+  background:linear-gradient(#72d9ffdd,#c8f3ffcc);
+  border-bottom:5px solid #fff9;
+}
+h1 { font-size:clamp(2rem,6vw,3.5rem); margin:4px 0; text-shadow:2px 3px white; }
+header p { margin:5px; font-weight:800; }
+.top-controls { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-top:12px; }
+main { max-width:1050px; margin:auto; padding:16px; }
+.panel {
+  background:#ffffffed; border:4px solid white; border-radius:28px;
+  padding:clamp(16px,4vw,28px); box-shadow:0 10px 25px #16466b20;
+  margin:12px 0;
+}
+.hidden { display:none !important; }
+.center { text-align:center; }
+.pirate { font-size:clamp(3.5rem,10vw,6rem); animation:bob 2s infinite ease-in-out; }
+@keyframes bob { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-8px) rotate(2deg)} }
+@keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-4deg)} 75%{transform:rotate(4deg)} }
+@keyframes pop { from{transform:scale(.65);opacity:.2} to{transform:scale(1);opacity:1} }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%,75%{transform:translateX(-7px)} 50%{transform:translateX(7px)} }
+@keyframes sparkle { from{transform:scale(.5) rotate(0);opacity:0} 50%{opacity:1} to{transform:scale(1.4) rotate(25deg);opacity:0} }
+.pop { animation:pop .35s ease-out; }
+.shake { animation:shake .35s; }
+input,select {
+  width:100%; padding:14px; border:3px solid #b6e7ff;
+  border-radius:15px; background:white; color:var(--navy); margin:6px 0 14px;
+}
+label { display:block; text-align:left; font-weight:900; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:580px){.form-grid{grid-template-columns:1fr}}
+.map {
+  position:relative; overflow:hidden; border-radius:24px; padding:16px;
+  background:repeating-linear-gradient(135deg,#f6d88b 0 22px,#ffe6a8 22px 44px);
+  border:4px dashed #bd8b36; margin:16px 0;
+}
+.mapline { display:flex; justify-content:space-around; gap:5px; align-items:center; flex-wrap:wrap; }
+.mapnode {
+  background:#fff9dd; border:3px solid #d9a443; border-radius:50%;
+  width:65px; height:65px; display:grid; place-items:center;
+  font-size:1.8rem; box-shadow:0 4px #a66c27;
+}
+.mapnode.done { background:#c8ffd9; border-color:#31ae68; }
+.mapnode.current { animation:bob 1.3s infinite; background:#fff; outline:4px solid #ffbc3e; }
+.progress { height:18px; background:#d8e8f2; border-radius:20px; overflow:hidden; margin:10px 0; }
+.progress div { height:100%; width:0; background:linear-gradient(90deg,#41d88c,#ffe25c); transition:width .4s; }
+.stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:12px 0; }
+.stat { background:#eef9ff; border-radius:16px; padding:10px 4px; text-align:center; font-weight:900; }
+.stat strong { display:block; font-size:1.45rem; }
+@media(max-width:500px){.stats{grid-template-columns:repeat(2,1fr)}}
+.mission-tag { display:inline-block; border-radius:99px; background:#e6dcff; padding:8px 15px; font-weight:900; }
+.big-letter {
+  font-size:clamp(7rem,24vw,12rem); line-height:1;
+  font-weight:1000; color:#287bb5;
+  text-shadow:0 7px #c4eaff,3px 10px #17345b25;
+  margin:12px 0; cursor:pointer; user-select:none;
+}
+.instruction { font-size:clamp(1.15rem,3vw,1.55rem); font-weight:900; line-height:1.5; }
+.actions { display:flex; justify-content:center; flex-wrap:wrap; gap:9px; margin:15px 0; }
+.feedback { border-radius:20px; padding:15px; margin:14px 0; font-size:1.1rem; font-weight:900; }
+.feedback.good { background:#d9ffe6; border:3px solid #51c984; color:#176a3a; }
+.feedback.bad { background:#ffe1e3; border:3px solid #f08b91; color:#a52d37; }
+.feedback.review { background:#fff0c5; border:3px solid #edc15a; color:#80520a; }
+.treasure { font-size:2.4rem; }
+.choice-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+.choice { font-size:2rem; padding:16px 5px; color:#205580; background:#e5f7ff; border:3px solid #b9e8ff; }
+@media(max-width:500px){.choice-grid{grid-template-columns:repeat(3,1fr)}}
+.chest {
+  font-size:5rem; display:inline-block; cursor:pointer;
+  filter:drop-shadow(0 7px 2px #9c6b2c55); transition:.2s;
+}
+.chest:hover { transform:scale(1.1) rotate(-3deg); }
+.reward-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.reward { background:#fff3ca; border:3px solid #ffd56b; padding:15px 5px; border-radius:18px; }
+.reward strong { display:block; font-size:1.5rem; }
+table { width:100%; border-collapse:collapse; font-size:.9rem; }
+th,td { padding:9px; border-bottom:2px solid #e5eff6; text-align:left; }
+th { background:#eaf8ff; }
+.table-wrap { overflow-x:auto; }
+footer { text-align:center; padding:18px; font-size:.9rem; }
+#particles { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:20; }
+.particle { position:absolute; top:-30px; animation:fall 2s linear forwards; font-size:1.8rem; }
+@keyframes fall { to{transform:translateY(110vh) rotate(500deg);opacity:0} }
+.small { font-size:.9rem; color:#4e6d86; }
+</style>
+</head>
+<body>
+<div id="particles"></div>
+<header>
+  <div class="pirate" aria-hidden="true">🏴‍☠️🦜</div>
+  <h1>JOM KENALI VOKAL!</h1>
+  <p>💎 Dengar, Sebut dan Jadi Juara Vokal! 🗺️</p>
+  <div class="top-controls">
+    <button class="gold" id="musicBtn" onclick="toggleMusic()">🎵 Muzik: ON</button>
+    <button class="soft" onclick="speak('Selamat datang ke pengembaraan harta karun huruf vokal!')">🔊 Dengar Pengenalan</button>
+    <button class="soft" onclick="showTeacher()">🧑‍🏫 Dashboard Guru</button>
+  </div>
+</header>
+
+<main>
+<section id="home" class="panel center">
+  <div class="pirate">🗺️💎🏝️</div>
+  <h2>Selamat Datang, Pengembara Cilik!</h2>
+  <p class="instruction">Bantu Kapten Koko mencari 5 permata vokal yang hilang!</p>
+  <div class="map">
+    <h3>🧭 PETA PENGEMBARAAN</h3>
+    <div class="mapline">
+      <div class="mapnode">🚢</div><div>➜</div><div class="mapnode">🅰️</div><div>➜</div>
+      <div class="mapnode">💎</div><div>➜</div><div class="mapnode">🏆</div>
+    </div>
+    <p>Dengar audio, sebut huruf, kumpul bintang dan buka peti harta karun!</p>
+  </div>
+  <div class="form-grid">
+    <div><label for="studentName">✏️ Nama murid</label><input id="studentName" placeholder="Contoh: Aina" autocomplete="name"></div>
+    <div><label for="studentClass">🏫 Kelas</label><input id="studentClass" placeholder="Contoh: 2 Bestari"></div>
+  </div>
+  <p class="small">📅 Tarikh pentaksiran: <strong id="today"></strong></p>
+  <div class="actions"><button class="primary" onclick="startGame()">🚀 MULA PENGEMBARAAN!</button></div>
+  <p id="homeError" class="feedback bad hidden">Sila isi nama dan kelas dahulu, ya!</p>
+</section>
+
+<section id="game" class="panel hidden">
+  <div class="map">
+    <div class="mapline">
+      <div class="mapnode current" id="map1">🗺️</div>
+      <div class="mapnode" id="map2">💎</div>
+      <div class="mapnode" id="map3">🏴‍☠️</div>
+      <div class="mapnode" id="map4">🧰</div>
+      <div class="mapnode" id="map5">🏆</div>
+    </div>
+    <p class="center"><strong id="welcome"></strong></p>
+  </div>
+  <div class="stats">
+    <div class="stat">💚 Betul<strong id="correctCount">0</strong></div>
+    <div class="stat">❌ Salah<strong id="wrongCount">0</strong></div>
+    <div class="stat">🔎 Semakan<strong id="reviewCount">0</strong></div>
+    <div class="stat">⭐ Bintang<strong id="starCount">0</strong></div>
+  </div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <div class="center">
+    <span class="mission-tag" id="missionTag">MISI 1</span>
+    <h2 id="questionTitle">Kenali Nama Huruf</h2>
+    <p id="questionCounter">Soalan 1 daripada 10</p>
+    <div class="big-letter" id="letter" onclick="hearExample()" title="Tekan huruf untuk mendengar">a</div>
+    <p class="instruction" id="instruction">Dengar contoh, kemudian sebut nama huruf ini.</p>
+    <p class="small" id="voiceHint">Tekan “Dengar Contoh” sebelum merakam suara.</p>
+    <div class="actions">
+      <button class="gold" onclick="hearExample()">🔊 Dengar Contoh</button>
+      <button class="primary" id="recordBtn" onclick="recordVoice()">🎙️ Rakam Suara Saya</button>
+      <button class="purple" id="stopBtn" onclick="stopRecording()" disabled>⏹️ Henti Rakaman</button>
+      <button class="soft" id="playBtn" onclick="playRecording()" disabled>▶️ Dengar Suara Saya</button>
+    </div>
+    <div class="actions">
+      <button class="soft" onclick="replayInstruction()">🗣️ Dengar Arahan</button>
+      <button class="green" id="checkBtn" onclick="checkAnswer()">🔍 Semak Jawapan</button>
+      <button class="soft" onclick="resetRecording()">🔄 Rakam Semula</button>
+    </div>
+    <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+    <div id="choiceArea" class="hidden">
+      <p><strong>Guru boleh menyemak sebutan murid:</strong></p>
+      <div class="actions">
+        <button class="green" onclick="teacherMark('correct')">✅ Betul</button>
+        <button class="danger" onclick="teacherMark('wrong')">❌ Salah</button>
+        <button class="gold" onclick="teacherMark('review')">🔎 Perlu Semakan</button>
+      </div>
+      <p class="small">Semakan automatik bagi huruf tunggal mungkin tidak tepat. Gunakan penilaian guru jika sebutan tidak dapat dipastikan.</p>
+    </div>
+    <div class="actions">
+      <button class="gold hidden" id="nextBtn" onclick="nextQuestion()">➡️ Soalan Seterusnya</button>
+    </div>
+  </div>
+</section>
+
+<section id="result" class="panel center hidden">
+  <div class="pirate">🏴‍☠️🎉🪙</div>
+  <h2>TAHNIAH, PENGEMBARA HEBAT!</h2>
+  <p class="instruction" id="resultGreeting"></p>
+  <div class="chest" onclick="celebrate()" title="Tekan peti harta karun">🧰</div>
+  <div class="reward-grid">
+    <div class="reward">💚 Betul<strong id="finalCorrect">0</strong></div>
+    <div class="reward">❌ Salah<strong id="finalWrong">0</strong></div>
+    <div class="reward">⭐ Bintang<strong id="finalStars">0</strong></div>
+  </div>
+  <div class="panel">
+    <h3>📜 Skrol Keputusan</h3>
+    <p id="finalName"></p><p id="finalDate"></p>
+    <p id="finalMission1"></p><p id="finalMission2"></p>
+    <p id="finalReview"></p><p id="finalPercent"></p>
+    <div id="finalBreakdown"></div>
+  </div>
+  <div class="actions">
+    <button class="primary" onclick="restartGame()">🔁 Main Semula</button>
+    <button class="gold" onclick="showTeacher()">📊 Lihat Keputusan</button>
+    <button class="soft" onclick="goHome()">🏠 Halaman Utama</button>
+  </div>
+</section>
+
+<section id="teacher" class="panel hidden">
+  <div class="center">
+    <div class="pirate">🧑‍🏫📊</div>
+    <h2>Dashboard Kapten Guru</h2>
+    <p>Semak rekod pengembaraan dan bantu murid menguasai vokal.</p>
+  </div>
+  <div class="stats">
+    <div class="stat">👧 Murid<strong id="totalStudents">0</strong></div>
+    <div class="stat">🧭 Percubaan<strong id="totalAttempts">0</strong></div>
+    <div class="stat">💚 Betul<strong id="teacherCorrect">0</strong></div>
+    <div class="stat">🔎 Semakan<strong id="teacherReview">0</strong></div>
+  </div>
+  <div class="form-grid">
+    <div><label for="filterClass">Tapis kelas</label><input id="filterClass" placeholder="Semua kelas" oninput="renderDashboard()"></div>
+    <div><label for="filterName">Cari murid</label><input id="filterName" placeholder="Nama murid" oninput="renderDashboard()"></div>
+  </div>
+  <div class="actions">
+    <button class="primary" onclick="exportCSV()">📥 Eksport CSV</button>
+    <button class="gold" onclick="exportJSON()">🗃️ Sandaran JSON</button>
+    <button class="soft" onclick="document.getElementById('importFile').click()">📤 Pulihkan Sandaran</button>
+    <input id="importFile" type="file" accept=".json,application/json" class="hidden" onchange="importJSON(event)">
+    <button class="soft" onclick="showAnalysis()">📈 Analisis Vokal</button>
+    <button class="soft" onclick="goHome()">🏠 Halaman Utama</button>
+  </div>
+  <div id="analysis" class="panel hidden">
+    <h3>📈 Analisis Setiap Huruf</h3>
+    <div class="table-wrap"><table id="analysisTable"></table></div>
+    <p id="intervention"></p>
+  </div>
+  <h3>📚 Rekod Pentaksiran</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Nama / Kelas</th><th>Tarikh</th><th>Betul</th><th>Salah</th><th>Semakan</th><th>Belum dinilai</th><th>Penguasaan</th><th>Tindakan</th></tr></thead>
+      <tbody id="recordsBody"></tbody>
+    </table>
+  </div>
+  <p class="small">Rekod disimpan pada peranti ini sahaja. Jangan gunakan peranti awam untuk menyimpan maklumat murid. Rakaman suara tidak disimpan sebagai rekod kekal dalam versi ini.</p>
+  <div class="actions"><button class="danger" onclick="clearRecords()">🗑️ Padam Semua Rekod</button></div>
+  <div id="recordDetail" class="panel hidden"></div>
+</section>
+</main>
+<footer>🗺️ Jom Kenali Vokal! • Setiap huruf ialah satu langkah menuju harta ilmu! 💎</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const vowels = ["a","e","i","o","u"];
+let student = {name:"",klass:""};
+let questions = [];
+let index = 0;
+let mediaRecorder = null;
+let audioChunks = [];
+let recordingBlob = null;
+let recordingUrl = null;
+let recordingStream = null;
+let musicOn = true;
+let audioCtx = null;
+let musicTimer = null;
+let musicStep = 0;
+let recognition = null;
+let recognizedText = "";
+let attemptStarted = false;
+let speechSupported = !!(window.SpeechSynthesisUtterance);
+const STORE_KEY = "jomKenaliVokalTreasureRecordsV2";
+
+$("today").textContent = new Date().toLocaleDateString("ms-MY",{day:"2-digit",month:"long",year:"numeric"});
+
+function loadRecords(){
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || "[]"); }
+  catch(e){ return []; }
+}
+function saveRecords(records){
+  try { localStorage.setItem(STORE_KEY,JSON.stringify(records)); }
+  catch(e){ alert("Ruang simpanan tidak mencukupi. Sila eksport sandaran rekod."); }
+}
+function speak(text,rate=0.82){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "ms-MY";
+  utterance.rate = rate;
+  utterance.pitch = 1.12;
+  const voices = speechSynthesis.getVoices();
+  const malay = voices.find(v => v.lang.toLowerCase().startsWith("ms"));
+  if(malay) utterance.voice = malay;
+  speechSynthesis.speak(utterance);
+}
+function sayLetter(letter,mission){
+  if(letter==="e" && mission===1) {
+    speak("Nama huruf e.");
+  } else if(letter==="e" && mission===2){
+    speak("Dengar bunyi e. Guru boleh memilih e pepet atau e taling.");
+  } else if(mission===1) {
+    speak("Nama huruf " + letter + ".");
+  } else {
+    speak("Bunyikan huruf " + letter + ".");
+  }
+}
+function replayInstruction(){
+  const q=questions[index];
+  if(!q) return;
+  speak(q.mission===1
+    ? "Misi satu. Dengar contoh, kemudian sebut nama huruf " + q.letter + "."
+    : "Misi dua. Dengar bunyi huruf, kemudian bunyikan huruf " + q.letter + ".");
+}
+function startGame(){
+  const name=$("studentName").value.trim(), klass=$("studentClass").value.trim();
+  if(!name || !klass){
+    $("homeError").classList.remove("hidden");
+    $("homeError").classList.add("shake");
+    speak("Sila isi nama dan kelas dahulu.");
+    return;
+  }
+  $("homeError").classList.add("hidden");
+  student={name,klass};
+  questions=[];
+  for(let mission=1;mission<=2;mission++){
+    vowels.forEach(letter=>questions.push({
+      mission,letter,status:"unanswered",attempts:0,
+      target:letter==="e"&&mission===2?"pilihan guru":"standard",
+      transcript:"",recorded:false
+    }));
+  }
+  index=0; attemptStarted=true;
+  showSection("game");
+  $("welcome").textContent="Selamat datang, "+student.name+"! Kapten Koko sedia membantu!";
+  renderQuestion();
+  speak("Hai "+student.name+"! Jom kita kenali huruf vokal dan cari harta karun!");
+  startMusic();
+}
+function showSection(id){
+  ["home","game","result","teacher"].forEach(s=>$(s).classList.toggle("hidden",s!==id));
+}
+function renderQuestion(){
+  const q=questions[index];
+  if(!q) return finishGame();
+  cleanupRecording();
+  $("feedback").className="feedback hidden";
+  $("feedback").textContent="";
+  $("choiceArea").classList.add("hidden");
+  $("nextBtn").classList.add("hidden");
+  $("checkBtn").disabled=false;
+  $("recordBtn").disabled=false;
+  $("stopBtn").disabled=true;
+  $("playBtn").disabled=true;
+  $("missionTag").textContent=q.mission===1?"🧭 MISI 1":"💎 MISI 2";
+  $("questionTitle").textContent=q.mission===1?"Kenali Nama Huruf":"Jadi Juara Bunyi Vokal";
+  $("questionCounter").textContent="Soalan "+(index+1)+" daripada "+questions.length;
+  $("letter").textContent=q.letter;
+  $("letter").style.color=["#287bb5","#875bd5","#e47b35","#299d73","#dc6287"][vowels.indexOf(q.letter)];
+  $("instruction").textContent=q.mission===1
+    ?"Dengar contoh, kemudian sebut nama huruf ini."
+    :"Dengar bunyi huruf, kemudian bunyikan huruf ini.";
+  $("voiceHint").textContent=q.letter==="e"&&q.mission===2
+    ?"Guru: tentukan sama ada bunyi e pepet atau e taling."
+    :"Tekan “Dengar Contoh”, kemudian rakam sebutan kamu.";
+  const completed=index;
+  $("progressBar").style.width=(completed/questions.length*100)+"%";
+  for(let i=1;i<=5;i++){
+    $("map"+i).classList.toggle("done",i<=index);
+    $("map"+i).classList.toggle("current",i===Math.min(5,index+1));
+  }
+  updateStats();
+  setTimeout(()=>speak($("instruction").textContent),250);
+}
+function hearExample(){
+  const q=questions[index]; if(!q) return;
+  if(q.mission===1) {
+    sayLetter(q.letter,1);
+  } else if(q.letter==="e"){
+    speak("Pilih bunyi e pepet atau e taling. Guru perlu menentukan sasaran sebelum menilai.");
+  } else {
+    speak("Dengar bunyi huruf "+q.letter+".");
+    setTimeout(()=>sayLetter(q.letter,2),650);
+  }
+}
+function startMusic(){
+  if(!musicOn) return;
+  try{
+    if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==="suspended") audioCtx.resume();
+    if(musicTimer) clearInterval(musicTimer);
+    const notes=[392,494,587,494,440,523,659,523];
+    musicTimer=setInterval(()=>{
+      if(!musicOn||!audioCtx) return;
+      playTone(notes[musicStep%notes.length],.13,.025);
+      musicStep++;
+    },450);
+  }catch(e){}
+}
+function playTone(freq,duration=.15,volume=.035){
+  if(!audioCtx||!musicOn) return;
+  const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+  osc.type="sine"; osc.frequency.value=freq;
+  gain.gain.setValueAtTime(volume,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime+duration);
+}
+function toggleMusic(){
+  musicOn=!musicOn;
+  $("musicBtn").textContent=musicOn?"🎵 Muzik: ON":"🔇 Muzik: OFF";
+  if(!musicOn){if(musicTimer)clearInterval(musicTimer);}
+  else startMusic();
+}
+async function recordVoice(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){
+    showFeedback("review","🎙️ Mikrofon tidak tersedia di sini. Cuba buka permainan melalui laman HTTPS dan semak kebenaran mikrofon.");
+    $("choiceArea").classList.remove("hidden");
+    speak("Mikrofon tidak tersedia. Sila minta bantuan guru.");
+    return;
+  }
+  try{
+    cleanupRecording();
+    recordingStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    audioChunks=[];
+    mediaRecorder=new MediaRecorder(recordingStream);
+    mediaRecorder.ondataavailable=e=>{if(e.data.size)audioChunks.push(e.data);};
+    mediaRecorder.onstop=()=>{
+      recordingBlob=new Blob(audioChunks,{type:mediaRecorder.mimeType||"audio/webm"});
+      recordingUrl=URL.createObjectURL(recordingBlob);
+      $("playBtn").disabled=false;
+      $("recordBtn").disabled=false;
+      $("stopBtn").disabled=true;
+      $("voiceHint").textContent="Rakaman siap! Dengar semula sebelum menyemak.";
+      questions[index].recorded=true;
+      startRecognition();
+      speak("Rakaman siap. Dengar semula suara kamu.");
+    };
+    mediaRecorder.start();
+    $("recordBtn").disabled=true;
+    $("stopBtn").disabled=false;
+    $("voiceHint").textContent="🔴 Sedang merakam... Sebut sekarang!";
+    speak("Sebut sekarang.");
+    setTimeout(()=>{if(mediaRecorder&&mediaRecorder.state==="recording")stopRecording();},4500);
+  }catch(e){
+    showFeedback("review","🎙️ Rakaman gagal. Pastikan kebenaran mikrofon dibenarkan dan cuba lagi.");
+    $("choiceArea").classList.remove("hidden");
+  }
+}
+function stopRecording(){
+  if(mediaRecorder&&mediaRecorder.state==="recording") mediaRecorder.stop();
+  if(recordingStream){recordingStream.getTracks().forEach(t=>t.stop());recordingStream=null;}
+  $("stopBtn").disabled=true;
+}
+function playRecording(){
+  if(!recordingUrl) return;
+  const audio=new Audio(recordingUrl);
+  audio.play().catch(()=>showFeedback("review","Rakaman tidak dapat dimainkan. Cuba rakam semula."));
+}
+function cleanupRecording(){
+  if(mediaRecorder&&mediaRecorder.state==="recording"){
+    try{mediaRecorder.stop();}catch(e){}
+  }
+  if(recordingStream){recordingStream.getTracks().forEach(t=>t.stop());recordingStream=null;}
+  if(recordingUrl){URL.revokeObjectURL(recordingUrl);recordingUrl=null;}
+  recordingBlob=null; audioChunks=[];
+  recognizedText="";
+  if(recognition){try{recognition.stop();}catch(e){} recognition=null;}
+}
+function resetRecording(){
+  cleanupRecording();
+  $("recordBtn").disabled=false;$("stopBtn").disabled=true;$("playBtn").disabled=true;
+  $("voiceHint").textContent="Rakaman dipadam. Kamu boleh cuba semula.";
+  $("feedback").className="feedback hidden";
+  $("choiceArea").classList.add("hidden");
+}
+function startRecognition(){
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){recognizedText="";return;}
+  try{
+    recognition=new SpeechRecognition();
+    recognition.lang="ms-MY";
+    recognition.interimResults=false;
+    recognition.maxAlternatives=3;
+    recognition.onresult=e=>{
+      recognizedText=Array.from(e.results).map(r=>r[0].transcript).join(" ").toLowerCase().trim();
+      questions[index].transcript=recognizedText;
+    };
+    recognition.onerror=()=>{recognizedText="";};
+    recognition.start();
+  }catch(e){recognizedText="";}
+}
+function normalize(s){
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z\s]/g," ").trim().replace(/\s+/g," ");
+}
+function checkAnswer(){
+  const q=questions[index]; if(!q)return;
+  if(q.status!=="unanswered"){
+    showFeedback("review","Soalan ini telah dinilai. Tekan soalan seterusnya untuk meneruskan.");
+    $("nextBtn").classList.remove("hidden");return;
+  }
+  if(!q.recorded){
+    showFeedback("review","🎙️ Rakam suara kamu dahulu sebelum menyemak jawapan.");
+    speak("Sila rakam suara kamu dahulu.");
+    return;
+  }
+  q.attempts++;
+  // Single-letter speech recognition is unreliable. Never mark wrong solely from an uncertain transcript.
+  const transcript=normalize(recognizedText);
+  const expected=q.letter;
+  const confident=transcript===expected || transcript===("huruf "+expected);
+  if(confident){
+    markQuestion("correct","🎉 HEBAT! JAWAPAN KAMU BETUL! Kamu menjumpai satu permata vokal!");
+  } else {
+    showFeedback("review","🔎 SUARA KAMU PERLU DISEMAK. Pengecaman suara bagi satu huruf mungkin tidak tepat. Guru boleh mendengar rakaman dan mengesahkan jawapan.");
+    $("choiceArea").classList.remove("hidden");
+    $("checkBtn").disabled=true;
+    speak("Bagus kerana mencuba! Mari kita semak bersama guru.");
+  }
+}
+function teacherMark(status){
+  const messages={
+    correct:["good","🎉 HEBAT! JAWAPAN KAMU BETUL! Permata vokal berjaya dikumpulkan!"],
+    wrong:["bad","💪 BELUM TEPAT. JANGAN PUTUS ASA! Dengar contoh dan cuba lagi bersama guru."],
+    review:["review","🔎 Jawapan ditandakan Perlu Semakan Guru."]
+  };
+  markQuestion(status,messages[status][1]);
+}
+function markQuestion(status,message){
+  const q=questions[index];
+  if(q.status!=="unanswered")return;
+  q.status=status;
+  q.assessedAt=new Date().toISOString();
+  showFeedback(status==="correct"?"good":status==="wrong"?"bad":"review",message);
+  $("choiceArea").classList.add("hidden");
+  $("checkBtn").disabled=true;
+  $("recordBtn").disabled=true;
+  $("nextBtn").classList.remove("hidden");
+  $("nextBtn").textContent=index===questions.length-1?"🏆 Buka Peti Harta Karun!":"➡️ Soalan Seterusnya";
+  updateStats();
+  if(status==="correct"){playReward();celebrate();}
+  else if(status==="wrong"){playTone(180,.25,.06);$("letter").classList.add("shake");setTimeout(()=>$("letter").classList.remove("shake"),400);}
+  else {playTone(300,.18,.04);}
+  speak(message.replace(/[🎉💪🔎💎!]/g,""));
+}
+function showFeedback(kind,text){
+  const el=$("feedback");
+  el.className="feedback "+kind+" pop";
+  el.textContent=text;
+}
+function updateStats(){
+  const counts={correct:0,wrong:0,review:0,unanswered:0};
+  questions.forEach(q=>counts[q.status]=(counts[q.status]||0)+1);
+  $("correctCount").textContent=counts.correct;
+  $("wrongCount").textContent=counts.wrong;
+  $("reviewCount").textContent=counts.review;
+  $("starCount").textContent=counts.correct;
+}
+function nextQuestion(){
+  if(questions[index].status==="unanswered"){
+    showFeedback("review","Sila nilai jawapan ini dahulu. Jawapan yang belum dinilai tidak akan dikira betul.");
+    return;
+  }
+  index++;
+  if(index>=questions.length)finishGame();
+  else renderQuestion();
+}
+function playReward(){
+  [523,659,784].forEach((n,i)=>setTimeout(()=>playTone(n,.18,.07),i*110));
+}
+function celebrate(){
+  const icons=["✨","💎","⭐","🪙","🎉","🌟"];
+  for(let i=0;i<28;i++){
+    const el=document.createElement("span");
+    el.className="particle";el.textContent=icons[Math.floor(Math.random()*icons.length)];
+    el.style.left=Math.random()*100+"%";
+    el.style.animationDelay=Math.random()*.7+"s";
+    $("particles").appendChild(el);
+    setTimeout(()=>el.remove(),3000);
+  }
+  playReward();
+}
+function finishGame(){
+  cleanupRecording();
+  showSection("result");
+  const correct=questions.filter(q=>q.status==="correct").length;
+  const wrong=questions.filter(q=>q.status==="wrong").length;
+  const review=questions.filter(q=>q.status==="review").length;
+  const assessed=correct+wrong;
+  const percent=assessed?Math.round(correct/assessed*100):null;
+  $("resultGreeting").textContent="Syabas, "+student.name+"! Terima kasih kerana berusaha mencari semua permata vokal.";
+  $("finalCorrect").textContent=correct;
+  $("finalWrong").textContent=wrong;
+  $("finalStars").textContent=correct;
+  $("finalName").textContent="👧 Nama: "+student.name+" | 🏫 Kelas: "+student.klass;
+  $("finalDate").textContent="📅 Tarikh: "+new Date().toLocaleString("ms-MY");
+  $("finalMission1").textContent="🧭 Misi 1 — Nama huruf: "+questions.filter(q=>q.mission===1&&q.status==="correct").length+"/5 betul";
+  $("finalMission2").textContent="💎 Misi 2 — Bunyi huruf: "+questions.filter(q=>q.mission===2&&q.status==="correct").length+"/5 betul";
+  $("finalReview").textContent="🔎 Perlu semakan: "+review+" | Belum dinilai: "+questions.filter(q=>q.status==="unanswered").length;
+  $("finalPercent").textContent="📊 Penguasaan berdasarkan jawapan yang disahkan: "+(percent===null?"Belum Dinilai":percent+"%");
+  $("finalBreakdown").innerHTML="<p>"+(percent===null?"Belum ada jawapan yang disahkan.":percent>=80?"🏆 Menguasai! Teruskan latihan!":percent>=50?"💪 Sedang menguasai. Berlatih lagi, ya!":"🌱 Perlu bimbingan dan latihan berulang.")+"</p>";
+  const record={
+    id:Date.now(),name:student.name,klass:student.klass,
+    date:new Date().toISOString(),
+    questions:questions.map(q=>({...q,recorded:!!q.recorded,transcript:q.transcript||""})),
+    correct,wrong,review,
+    unanswered:questions.filter(q=>q.status==="unanswered").length,
+    percent,mission1:questions.filter(q=>q.mission===1&&q.status==="correct").length,
+    mission2:questions.filter(q=>q.mission===2&&q.status==="correct").length
+  };
+  const records=loadRecords();records.push(record);saveRecords(records);
+  celebrate();speak("Tahniah "+student.name+"! Pengembaraan selesai.");
+}
+function restartGame(){
+  $("studentName").value=student.name;$("studentClass").value=student.klass;
+  startGame();
+}
+function goHome(){
+  cleanupRecording();
+  if(musicTimer){clearInterval(musicTimer);musicTimer=null;}
+  showSection("home");
+  speak("Jumpa lagi, pengembara cilik!");
+}
+function showTeacher(){
+  cleanupRecording();
+  showSection("teacher");
+  renderDashboard();
+}
+function renderDashboard(){
+  const records=loadRecords();
+  const nameFilter=$("filterName").value.trim().toLowerCase();
+  const classFilter=$("filterClass").value.trim().toLowerCase();
+  const filtered=records.filter(r=>r.name.toLowerCase().includes(nameFilter)&&r.klass.toLowerCase().includes(classFilter));
+  $("totalStudents").textContent=new Set(filtered.map(r=>r.name.toLowerCase()+"|"+r.klass.toLowerCase())).size;
+  $("totalAttempts").textContent=filtered.length;
+  $("teacherCorrect").textContent=filtered.reduce((n,r)=>n+r.correct,0);
+  $("teacherReview").textContent=filtered.reduce((n,r)=>n+r.review,0);
+  const body=$("recordsBody");body.innerHTML="";
+  if(!filtered.length){
+    body.innerHTML='<tr><td colspan="8">Belum ada rekod. Mulakan pengembaraan untuk merekod keputusan.</td></tr>';
+    return;
+  }
+  filtered.slice().reverse().forEach(r=>{
+    const tr=document.createElement("tr");
+    const values=[
+      r.name+" / "+r.klass,new Date(r.date).toLocaleString("ms-MY"),
+      r.correct,r.wrong,r.review,r.unanswered,
+      r.percent===null?"Belum dinilai":r.percent+"%",
+      ""
+    ];
+    values.forEach((v,i)=>{
+      const td=document.createElement("td");
+      if(i===7){
+        const btn=document.createElement("button");btn.className="soft";btn.textContent="Lihat";
+        btn.onclick=()=>showRecord(r.id);td.appendChild(btn);
+        const del=document.createElement("button");del.className="danger";del.textContent="Padam";
+        del.style.marginLeft="5px";del.onclick=()=>deleteRecord(r.id);td.appendChild(del);
+      }else td.textContent=v;
+      tr.appendChild(td);
+    });
+    body.appendChild(tr);
+  });
+}
+function showRecord(id){
+  const r=loadRecords().find(x=>x.id===id);if(!r)return;
+  const el=$("recordDetail");el.classList.remove("hidden");
+  let html="<h3>📜 Rekod: "+escapeHTML(r.name)+"</h3>";
+  html+="<p>Kelas: "+escapeHTML(r.klass)+" | Tarikh: "+new Date(r.date).toLocaleString("ms-MY")+"</p>";
+  html+='<div class="table-wrap"><table><tr><th>Misi</th><th>Huruf</th><th>Status</th><th>Pengecaman</th></tr>';
+  r.questions.forEach(q=>{
+    html+="<tr><td>"+(q.mission===1?"Nama huruf":"Bunyi huruf")+"</td><td>"+q.letter+"</td><td>"+statusLabel(q.status)+"</td><td>"+escapeHTML(q.transcript||"Tiada teks")+"</td></tr>";
+  });
+  html+="</table></div><p>Rakaman suara tidak disimpan dalam rekod ini.</p>";
+  el.innerHTML=html;
+  el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function statusLabel(s){return ({correct:"Betul",wrong:"Salah","review":"Perlu Semakan Guru",unanswered:"Belum Dinilai"})[s]||s;}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function deleteRecord(id){
+  if(!confirm("Padam rekod ini? Tindakan ini tidak boleh dibatalkan."))return;
+  saveRecords(loadRecords().filter(r=>r.id!==id));renderDashboard();
+  $("recordDetail").classList.add("hidden");
+}
+function clearRecords(){
+  if(!confirm("Adakah anda pasti mahu memadam SEMUA rekod pentaksiran?"))return;
+  saveRecords([]);renderDashboard();$("recordDetail").classList.add("hidden");
+}
+function exportCSV(){
+  const records=loadRecords();
+  if(!records.length){alert("Tiada rekod untuk dieksport.");return;}
+  const rows=[["Nama","Kelas","Tarikh","Betul","Salah","Perlu Semakan","Belum Dinilai","Peratus","Misi 1","Misi 2"]];
+  records.forEach(r=>rows.push([r.name,r.klass,new Date(r.date).toLocaleString("ms-MY"),r.correct,r.wrong,r.review,r.unanswered,r.percent===null?"Belum dinilai":r.percent+"%",r.mission1,r.mission2]));
+  const csv="\uFEFF"+rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  downloadFile(csv,"rekod-jom-kenali-vokal.csv","text/csv;charset=utf-8;");
+}
+function exportJSON(){
+  downloadFile(JSON.stringify(loadRecords(),null,2),"sandaran-jom-kenali-vokal.json","application/json");
+}
+function downloadFile(content,filename,type){
+  const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+}
+function importJSON(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const imported=JSON.parse(reader.result);
+      if(!Array.isArray(imported)||!confirm("Gabungkan "+imported.length+" rekod daripada sandaran?"))return;
+      const current=loadRecords();
+      saveRecords(current.concat(imported));
+      renderDashboard();alert("Sandaran berjaya dipulihkan.");
+    }catch(e){alert("Fail sandaran tidak sah.");}
+    event.target.value="";
+  };
+  reader.readAsText(file);
+}
+function showAnalysis(){
+  const records=loadRecords();
+  const latestMap=new Map();
+  records.forEach(r=>{
+    const key=r.name.toLowerCase()+"|"+r.klass.toLowerCase();
+    const old=latestMap.get(key);
+    if(!old||new Date(r.date)>new Date(old.date))latestMap.set(key,r);
+  });
+  const latest=Array.from(latestMap.values());
+  let html="<tr><th>Huruf</th><th>Kemahiran</th><th>Betul</th><th>Salah</th><th>Semakan</th><th>Ketepatan</th></tr>";
+  let weak=[];
+  ["Nama huruf","Bunyi huruf"].forEach((skill,si)=>{
+    vowels.forEach(v=>{
+      let c=0,w=0,rv=0;
+      latest.forEach(r=>r.questions.filter(q=>q.letter===v&&q.mission===si+1).forEach(q=>{
+        if(q.status==="correct")c++;if(q.status==="wrong")w++;if(q.status==="review")rv++;
+      }));
+      const assessed=c+w,pct=assessed?Math.round(c/assessed*100):null;
+      html+="<tr><td>"+v+"</td><td>"+skill+"</td><td>"+c+"</td><td>"+w+"</td><td>"+rv+"</td><td>"+(pct===null?"Belum dinilai":pct+"%")+"</td></tr>";
+      if(pct!==null&&pct<80)weak.push(v+" ("+skill+")");
+    });
+  });
+  $("analysisTable").innerHTML=html;
+  $("intervention").textContent=weak.length
+    ?"Cadangan intervensi: beri latihan mendengar dan menyebut secara berulang bagi "+weak.join(", ")+". Jawapan yang memerlukan semakan hendaklah dinilai guru sebelum membuat kesimpulan."
+    :"Belum cukup data atau semua kemahiran yang dinilai mencapai sekurang-kurangnya 80%. Teruskan pemantauan dan aktiviti pengayaan.";
+  $("analysis").classList.remove("hidden");
+}
+window.addEventListener("beforeunload",()=>{
+  if(musicTimer)clearInterval(musicTimer);
+  cleanupRecording();
+});
+</script>
+</body>
+</html>
